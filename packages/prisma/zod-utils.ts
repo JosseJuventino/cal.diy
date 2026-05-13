@@ -13,7 +13,7 @@ import z, { ZodNullable, ZodObject, ZodOptional } from "zod";
 import type { Prisma } from "./client";
 import { EventTypeCustomInputType } from "./enums";
 
-/** @see https://github.com/colinhacks/zod/issues/3155#issuecomment-2060045794 */
+/** @see https://github.com/colinhacks/zod/issues/3155#customInputSchema-2060045794 */
 export const emailRegex =
   /* eslint-disable-next-line no-useless-escape */
   /^(?!\.)(?!.*\.\.)([A-Z0-9_+-.']*)[A-Z0-9_+'-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i;
@@ -1086,6 +1086,12 @@ export const fieldSchema = baseFieldSchema.merge(
       )
       .optional(),
     disableOnPrefill: z.boolean().default(false).optional(),
+    conditionalOn: z
+      .object({
+        parentFieldName: z.string(),
+        showWhenParentHasValues: z.array(z.string()),
+      })
+      .optional(),
   })
 );
 

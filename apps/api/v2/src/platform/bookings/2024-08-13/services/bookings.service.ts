@@ -79,6 +79,12 @@ const eventTypeBookingFieldSchema = z
     editable: z.string(),
     type: z.string(),
     options: z.array(z.object({ value: z.string() })).optional(),
+    conditionalOn: z
+    .object({
+      parentFieldName: z.string(),
+      triggerValues: z.array(z.string()).min(1),
+    })
+    .optional(),
   })
   .passthrough();
 

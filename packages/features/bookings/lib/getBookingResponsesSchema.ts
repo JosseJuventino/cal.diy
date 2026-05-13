@@ -458,6 +458,19 @@ function preprocess<T extends z.ZodType>({
         if (bookingField.hideWhenJustOneOption) {
           hidden = hidden || numOptions <= 1;
         }
+        // If the field has a conditionalOn, check whether the parent value matches before validating
+        if (bookingField.conditionalOn) {
+          const { parentFieldName, showWhenParentHasValues } = bookingField.conditionalOn;
+          const parentValue = responses[parentFieldName];
+          const parentValues = Array.isArray(parentValue)
+            ? (parentValue as string[])
+            : [String(parentValue ?? "")];
+          const conditionMet = showWhenParentHasValues.some((v) => parentValues.includes(v));
+          if (!conditionMet) {
+            continue;
+          }
+        }
+
         let isRequired = false;
         // If the field is hidden, then it can never be required
         if (!hidden && isFieldApplicableToCurrentView) {

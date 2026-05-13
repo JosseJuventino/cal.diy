@@ -1,7 +1,7 @@
 import { BadRequestException } from "@nestjs/common";
 import { ApiProperty as DocsProperty, ApiPropertyOptional as DocsPropertyOptional } from "@nestjs/swagger";
-import { plainToInstance } from "class-transformer";
-import { IsString, IsBoolean, IsArray, IsIn, IsOptional } from "class-validator";
+import { plainToInstance, Type } from "class-transformer";
+import { IsString, IsBoolean, IsArray, IsIn, IsOptional, IsObject, ValidateNested } from "class-validator";
 import type { ValidationOptions, ValidatorConstraintInterface } from "class-validator";
 import { registerDecorator, validate, ValidatorConstraint } from "class-validator";
 
@@ -24,6 +24,21 @@ const inputBookingFieldTypes = [
 ] as const;
 
 const inputBookingFieldSlugs = ["title", "location", "notes", "guests", "rescheduleReason"] as const;
+
+export class ConditionalOnInput_2024_06_14 {
+  @IsString()
+  @DocsProperty({ description: "Slug of the parent booking field that controls visibility of this field" })
+  parentFieldName!: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @DocsProperty({
+    type: [String],
+    description: "This field is shown only when the parent field has one of these values",
+    example: ["web", "social media"],
+  })
+  showWhenParentHasValues!: string[];
+}
 
 export class NameDefaultFieldInput_2024_06_14 {
   @IsIn(inputBookingFieldTypes)
@@ -372,6 +387,13 @@ export class PhoneFieldInput_2024_06_14 {
       "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
   })
   hidden?: boolean;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ConditionalOnInput_2024_06_14)
+  @DocsPropertyOptional({ description: "Show this field only when a parent field has a specific value" })
+  conditionalOn?: ConditionalOnInput_2024_06_14;
 }
 
 export class AddressFieldInput_2024_06_14 {
@@ -419,6 +441,13 @@ export class AddressFieldInput_2024_06_14 {
       "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
   })
   hidden?: boolean;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ConditionalOnInput_2024_06_14)
+  @DocsPropertyOptional({ description: "Show this field only when a parent field has a specific value" })
+  conditionalOn?: ConditionalOnInput_2024_06_14;
 }
 
 export class TextFieldInput_2024_06_14 {
@@ -466,6 +495,13 @@ export class TextFieldInput_2024_06_14 {
       "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
   })
   hidden?: boolean;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ConditionalOnInput_2024_06_14)
+  @DocsPropertyOptional({ description: "Show this field only when a parent field has a specific value" })
+  conditionalOn?: ConditionalOnInput_2024_06_14;
 }
 
 export class UrlFieldInput_2024_06_14 {
@@ -513,6 +549,13 @@ export class UrlFieldInput_2024_06_14 {
       "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
   })
   hidden?: boolean;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ConditionalOnInput_2024_06_14)
+  @DocsPropertyOptional({ description: "Show this field only when a parent field has a specific value" })
+  conditionalOn?: ConditionalOnInput_2024_06_14;
 }
 
 export class NumberFieldInput_2024_06_14 {
@@ -560,6 +603,13 @@ export class NumberFieldInput_2024_06_14 {
       "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
   })
   hidden?: boolean;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ConditionalOnInput_2024_06_14)
+  @DocsPropertyOptional({ description: "Show this field only when a parent field has a specific value" })
+  conditionalOn?: ConditionalOnInput_2024_06_14;
 }
 
 export class TextAreaFieldInput_2024_06_14 {
@@ -607,6 +657,13 @@ export class TextAreaFieldInput_2024_06_14 {
       "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
   })
   hidden?: boolean;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ConditionalOnInput_2024_06_14)
+  @DocsPropertyOptional({ description: "Show this field only when a parent field has a specific value" })
+  conditionalOn?: ConditionalOnInput_2024_06_14;
 }
 
 export class SelectFieldInput_2024_06_14 {
@@ -658,6 +715,13 @@ export class SelectFieldInput_2024_06_14 {
       "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
   })
   hidden?: boolean;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ConditionalOnInput_2024_06_14)
+  @DocsPropertyOptional({ description: "Show this field only when a parent field has a specific value" })
+  conditionalOn?: ConditionalOnInput_2024_06_14;
 }
 
 export class MultiSelectFieldInput_2024_06_14 {
@@ -703,6 +767,13 @@ export class MultiSelectFieldInput_2024_06_14 {
       "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
   })
   hidden?: boolean;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ConditionalOnInput_2024_06_14)
+  @DocsPropertyOptional({ description: "Show this field only when a parent field has a specific value" })
+  conditionalOn?: ConditionalOnInput_2024_06_14;
 }
 
 export class MultiEmailFieldInput_2024_06_14 {
@@ -750,6 +821,13 @@ export class MultiEmailFieldInput_2024_06_14 {
       "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
   })
   hidden?: boolean;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ConditionalOnInput_2024_06_14)
+  @DocsPropertyOptional({ description: "Show this field only when a parent field has a specific value" })
+  conditionalOn?: ConditionalOnInput_2024_06_14;
 }
 
 export class CheckboxGroupFieldInput_2024_06_14 {
@@ -795,6 +873,13 @@ export class CheckboxGroupFieldInput_2024_06_14 {
       "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
   })
   hidden?: boolean;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ConditionalOnInput_2024_06_14)
+  @DocsPropertyOptional({ description: "Show this field only when a parent field has a specific value" })
+  conditionalOn?: ConditionalOnInput_2024_06_14;
 }
 
 export class RadioGroupFieldInput_2024_06_14 {
@@ -840,6 +925,13 @@ export class RadioGroupFieldInput_2024_06_14 {
       "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
   })
   hidden?: boolean;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ConditionalOnInput_2024_06_14)
+  @DocsPropertyOptional({ description: "Show this field only when a parent field has a specific value" })
+  conditionalOn?: ConditionalOnInput_2024_06_14;
 }
 
 export class BooleanFieldInput_2024_06_14 {
@@ -881,6 +973,13 @@ export class BooleanFieldInput_2024_06_14 {
       "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
   })
   hidden?: boolean;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ConditionalOnInput_2024_06_14)
+  @DocsPropertyOptional({ description: "Show this field only when a parent field has a specific value" })
+  conditionalOn?: ConditionalOnInput_2024_06_14;
 }
 
 type InputDefaultField_2024_06_14 =

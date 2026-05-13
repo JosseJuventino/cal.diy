@@ -51,6 +51,8 @@ export function transformBookingFieldsApiToInternal(bookingFields: InputBookingF
 }
 
 function getBaseProperties(field: InputBookingField): CustomField | SystemField {
+  const conditionalOn = "conditionalOn" in field ? field.conditionalOn : undefined;
+
   if (fieldIsSelect(field)) {
     return {
       name: field.slug,
@@ -68,6 +70,7 @@ function getBaseProperties(field: InputBookingField): CustomField | SystemField 
       required: field.required,
       disableOnPrefill: !!field.disableOnPrefill,
       hidden: "hidden" in field ? field.hidden : false,
+      conditionalOn,
     };
   }
 
@@ -209,6 +212,7 @@ function getBaseProperties(field: InputBookingField): CustomField | SystemField 
       required: !!field.required,
       disableOnPrefill: !!field.disableOnPrefill,
       hidden: !!field.hidden,
+      conditionalOn,
     };
   }
 
@@ -231,6 +235,7 @@ function getBaseProperties(field: InputBookingField): CustomField | SystemField 
       required: !!field.required,
       disableOnPrefill: !!field.disableOnPrefill,
       hidden: !!field.hidden,
+      conditionalOn,
     };
   }
 
@@ -251,6 +256,7 @@ function getBaseProperties(field: InputBookingField): CustomField | SystemField 
     placeholder: field.placeholder,
     disableOnPrefill: !!field.disableOnPrefill,
     hidden: !!field.hidden,
+    conditionalOn,
   };
 }
 

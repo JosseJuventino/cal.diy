@@ -158,6 +158,7 @@ export function transformBookingFieldsInternalToApi(
             placeholder: field.placeholder,
             disableOnPrefill: !!field.disableOnPrefill,
             hidden: !!field.hidden,
+            conditionalOn: (field as CustomField).conditionalOn,
           } satisfies PhoneFieldOutput_2024_06_14;
         case "address":
           return {
@@ -169,6 +170,7 @@ export function transformBookingFieldsInternalToApi(
             placeholder: field.placeholder,
             disableOnPrefill: !!field.disableOnPrefill,
             hidden: !!field.hidden,
+            conditionalOn: (field as CustomField).conditionalOn,
           } satisfies AddressFieldOutput_2024_06_14;
         case "text":
           return {
@@ -180,6 +182,7 @@ export function transformBookingFieldsInternalToApi(
             placeholder: field.placeholder,
             disableOnPrefill: !!field.disableOnPrefill,
             hidden: !!field.hidden,
+            conditionalOn: (field as CustomField).conditionalOn,
           } satisfies TextFieldOutput_2024_06_14;
         case "number":
           return {
@@ -191,6 +194,7 @@ export function transformBookingFieldsInternalToApi(
             placeholder: field.placeholder,
             disableOnPrefill: !!field.disableOnPrefill,
             hidden: !!field.hidden,
+            conditionalOn: (field as CustomField).conditionalOn,
           } satisfies NumberFieldOutput_2024_06_14;
         case "textarea":
           return {
@@ -202,6 +206,7 @@ export function transformBookingFieldsInternalToApi(
             placeholder: field.placeholder,
             disableOnPrefill: !!field.disableOnPrefill,
             hidden: !!field.hidden,
+            conditionalOn: (field as CustomField).conditionalOn,
           } satisfies TextAreaFieldOutput_2024_06_14;
         case "multiemail":
           return {
@@ -213,6 +218,7 @@ export function transformBookingFieldsInternalToApi(
             placeholder: field.placeholder,
             disableOnPrefill: !!field.disableOnPrefill,
             hidden: !!field.hidden,
+            conditionalOn: (field as CustomField).conditionalOn,
           } satisfies MultiEmailFieldOutput_2024_06_14;
         case "boolean":
           return {
@@ -223,6 +229,7 @@ export function transformBookingFieldsInternalToApi(
             required: !!field.required,
             disableOnPrefill: !!field.disableOnPrefill,
             hidden: !!field.hidden,
+            conditionalOn: (field as CustomField).conditionalOn,
           } satisfies BooleanFieldOutput_2024_06_14;
         case "select":
           return {
@@ -235,6 +242,7 @@ export function transformBookingFieldsInternalToApi(
             disableOnPrefill: !!field.disableOnPrefill,
             options: field.options ? field.options.map((option) => option.value) : [],
             hidden: !!field.hidden,
+            conditionalOn: (field as CustomField).conditionalOn,
           } satisfies SelectFieldOutput_2024_06_14;
         case "multiselect":
           return {
@@ -246,6 +254,7 @@ export function transformBookingFieldsInternalToApi(
             disableOnPrefill: !!field.disableOnPrefill,
             options: field.options ? field.options.map((option) => option.value) : [],
             hidden: !!field.hidden,
+            conditionalOn: (field as CustomField).conditionalOn,
           } satisfies MultiSelectFieldOutput_2024_06_14;
         case "checkbox":
           return {
@@ -257,6 +266,7 @@ export function transformBookingFieldsInternalToApi(
             disableOnPrefill: !!field.disableOnPrefill,
             options: field.options ? field.options.map((option) => option.value) : [],
             hidden: !!field.hidden,
+            conditionalOn: (field as CustomField).conditionalOn,
           } satisfies CheckboxGroupFieldOutput_2024_06_14;
         case "radio":
           return {
@@ -268,6 +278,7 @@ export function transformBookingFieldsInternalToApi(
             options: field.options ? field.options.map((option) => option.value) : [],
             disableOnPrefill: !!field.disableOnPrefill,
             hidden: !!field.hidden,
+            conditionalOn: (field as CustomField).conditionalOn,
           } satisfies RadioGroupFieldOutput_2024_06_14;
         case "url":
           return {
@@ -279,6 +290,7 @@ export function transformBookingFieldsInternalToApi(
             placeholder: field.placeholder,
             disableOnPrefill: !!field.disableOnPrefill,
             hidden: !!field.hidden,
+            conditionalOn: (field as CustomField).conditionalOn,
           } satisfies UrlFieldOutput_2024_06_14;
         default:
           return {
@@ -333,6 +345,12 @@ const CustomFieldsSchema = z.object({
     )
     .optional(),
   disableOnPrefill: z.boolean().optional(),
+  conditionalOn: z
+    .object({
+      parentFieldName: z.string(),
+      showWhenParentHasValues: z.array(z.string()),
+    })
+    .optional(),
 });
 
 const SystemFieldSchema = z.object({
