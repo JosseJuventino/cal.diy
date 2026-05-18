@@ -42,6 +42,7 @@ export const BookingFields = ({
   const { t, i18n } = useLocale();
   const { watch, setValue, formState } = useFormContext();
   const locationResponse = watch("responses.location");
+  const allResponses = watch("responses") as Record<string, unknown> | undefined;
   const currentView = rescheduleUid ? "reschedule" : "";
   // Identify all phone fields (except location field)
   const otherPhoneFieldNames = useMemo(
@@ -219,6 +220,16 @@ export const BookingFields = ({
                   : field.value,
             };
           });
+        }
+
+        // Conditional visibility: hide if parent field condition is not met
+        if ((field as { conditionalOn?: { parentFieldName: string; showWhenParentHasValues: string[] } }).conditionalOn) {
+          const { parentFieldName, showWhenParentHasValues } = (field as any).conditionalOn;
+          const parentValue = allResponses?.[parentFieldName];
+          const parentValues = Array.isArray(parentValue) ? (parentValue as string[]) : [String(parentValue ?? "")];
+          if (!showWhenParentHasValues.some((v: string) => parentValues.includes(v))) {
+            hidden = true;
+          }
         }
 
         // Add price display for custom inputs with prices

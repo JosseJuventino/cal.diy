@@ -392,6 +392,7 @@ export const FormBuilder = function FormBuilder({
       {/* Move this Dialog in another component and it would take with it fieldForm */}
       {fieldDialog.isOpen && (
         <FieldEditDialog
+          allFields={fields.filter((_, i) => i !== fieldDialog.fieldIndex)}
           dialog={fieldDialog}
           onOpenChange={(isOpen) =>
             setFieldDialog({
@@ -593,6 +594,13 @@ const CheckboxFieldLabel = ({ fieldForm }: { fieldForm: UseFormReturn<RhfFormFie
   );
 };
 
+type ParentFieldCandidate = {
+  name: string;
+  type: string;
+  label?: string;
+  options?: { label: string; value: string; price?: number }[];
+};
+
 function FieldEditDialog({
   dialog,
   onOpenChange,
@@ -600,6 +608,7 @@ function FieldEditDialog({
   shouldConsiderRequired,
   showPriceField,
   paymentCurrency,
+  allFields,
 }: {
   dialog: { isOpen: boolean; fieldIndex: number; data: RhfFormField | null };
   onOpenChange: (isOpen: boolean) => void;
@@ -607,6 +616,7 @@ function FieldEditDialog({
   shouldConsiderRequired?: (field: RhfFormField) => boolean | undefined;
   showPriceField?: boolean;
   paymentCurrency: string;
+  allFields: ParentFieldCandidate[];
 }) {
   const { t } = useLocale();
   const isPlatform = useIsPlatform();
@@ -641,7 +651,7 @@ function FieldEditDialog({
     <Dialog open={dialog.isOpen} onOpenChange={onOpenChange} modal={false}>
       <DialogContent className="max-h-none" data-testid="edit-field-dialog" forceOverlayWhenNoModal={true}>
         <Form id="form-builder" form={fieldForm} handleSubmit={handleSubmit}>
-          <div className="h-auto max-h-[85vh]">
+          <div className="h-auto max-h-[85vh] overflow-y-auto">
             <DialogHeader
               title={t("add_a_booking_question")}
               subtitle={
@@ -822,6 +832,89 @@ function FieldEditDialog({
                         }}
                       />
                     </div>
+
+                    {/* Conditional visibility — only for user-editable custom fields */}
+                    {!["system", "system-but-optional"].includes(fieldForm.getValues("editable") || "") && (() => {
+                      const parentCandidates = allFields.filter(
+                        (f) => f.type === "select" || f.type === "radio" || f.type === "checkbox" || f.type === "multiselect"
+                      );
+                      if (parentCandidates.length === 0) return null;
+
+                      const parentOptions = parentCandidates.map((f) => ({
+                        label: f.label || f.name,
+                        value: f.name,
+                      }));
+
+                      return (
+                        <div className="mt-6">
+                          <Controller
+                            name="conditionalOn"
+                            control={fieldForm.control}
+                            render={({ field: { value, onChange } }) => {
+                              const isConditional = !!value;
+                              const selectedParent = parentCandidates.find(
+                                (f) => f.name === value?.parentFieldName
+                              );
+                              const valueOptions = (selectedParent?.options ?? []).map((opt) => ({
+                                label: opt.label,
+                                value: opt.value,
+                              }));
+
+                              return (
+                                <>
+                                  <CheckboxField
+                                    description="Show this field conditionally"
+                                    checked={isConditional}
+                                    onChange={(e) => {
+                                      onChange(
+                                        e.target.checked
+                                          ? { parentFieldName: "", showWhenParentHasValues: [] }
+                                          : undefined
+                                      );
+                                    }}
+                                  />
+                                  {value && (
+                                    <div className="mt-4 space-y-4 pl-1">
+                                      <SelectField
+                                        label="Show when field..."
+                                        options={parentOptions}
+                                        value={parentOptions.find((o) => o.value === value.parentFieldName) ?? null}
+                                        onChange={(selected) => {
+                                          onChange({
+                                            parentFieldName: selected?.value ?? "",
+                                            showWhenParentHasValues: [],
+                                          });
+                                        }}
+                                      />
+                                      {value.parentFieldName && valueOptions.length > 0 && (
+                                        <div>
+                                          <Label>Has value</Label>
+                                          <div className="space-y-2 pl-1">
+                                            {valueOptions.map((opt) => (
+                                              <CheckboxField
+                                                key={opt.value}
+                                                description={opt.label}
+                                                checked={value.showWhenParentHasValues.includes(opt.value)}
+                                                onChange={(e) => {
+                                                  const newValues = e.target.checked
+                                                    ? [...value.showWhenParentHasValues, opt.value]
+                                                    : value.showWhenParentHasValues.filter((v) => v !== opt.value);
+                                                  onChange({ ...value, showWhenParentHasValues: newValues });
+                                                }}
+                                              />
+                                            ))}
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                                </>
+                              );
+                            }}
+                          />
+                        </div>
+                      );
+                    })()}
                   </>
                 );
               }
